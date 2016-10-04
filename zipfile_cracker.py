@@ -4,11 +4,13 @@
 '''
 zipfile_cracker.py
     Crack password-protected zip file based on dictonary
+    If found, return password, otherwise nothing
 '''
 
 import sys
 import os
 import zipfile
+from threading import Thread
 
 ls = os.linesep
 
@@ -21,18 +23,21 @@ class Cracker(object):
         self.zipfile = zipfile
         self.dictonary = dictonary
 
+    def extract_file(self, zipfile, password):
+        try:
+            zipfile.extractall(path = 'temp', pwd=bytes(password, 'utf-8'))
+            print('[+] Password FOUND: {0}'.format(password))
+            os.system('rm -rf temp 2>/dev/null')
+        except Exception as e:
+            pass
+
     def try_password(self):
         zfile = zipfile.ZipFile(self.zipfile)
         with open(self.dictonary, 'r') as f:
             for line in f:
                 password = line.strip(ls)
-                try:
-                    zfile.extractall(pwd = password)
-                    print('[+] Password FOUND: {0}'.format(password))
-                    sys.exit(0)
-                except Exception as e:
-                    pass
-            print('[-] Password NOT found.')
+                t = Thread(target = self.extract_file, args = (zfile, password))
+                t.start()
     
     def run(self):
         self.try_password()
