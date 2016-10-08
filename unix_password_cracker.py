@@ -9,6 +9,7 @@ unix_password_cracker.py
 import sys
 import os
 import crypt
+import argparse
 
 ls = os.linesep
 
@@ -24,12 +25,11 @@ class Cracker(object):
         '''
 
         try:
-            salt = hashed_password.split('$')
-            insalt = '${0}${1}$'.format(salt[1], salt[2])
+            salt = hashed_password[:12]  # first 12-character of hashed_password
             with open(self.dictonary_file, 'r') as f:
                 for line in f:
                     password = line.strip(ls)
-                    if crypt.crypt(password, insalt) == hashed_password:
+                    if crypt.crypt(password, salt) == hashed_password:
                         print(' [+] Password FOUND: {0}'.format(password))
                         return
                 print(' [-] Password NOT found.')
@@ -61,14 +61,15 @@ class Cracker(object):
 
         self.try_password()
 
-def usage():
-    print('Usage\n  {0} passwords.txt dictonary.txt'.format(sys.argv[0]))
-    sys.exit(1)
-
 def main():
-    if len(sys.argv) < 3:
-        usage()
-    cracker = Cracker(sys.argv[1], sys.argv[2])
+    parser = argparse.ArgumentParser(description='Unix password cracker')
+    parser.add_argument('-f', '--zipfile', help = 'specify zip file')
+    parser.add_argument('-d', '--dictonary', help = 'dictonary used to crack zip file')
+    args = parser.parse_args()
+    if args.zipfile == None or args.dictonary == None:
+        print(parser.usage)
+        sys.exit(0)
+    cracker = Cracker(args.zipfile, args.dictonary)
     cracker.run()
 
 if __name__ == '__main__':
