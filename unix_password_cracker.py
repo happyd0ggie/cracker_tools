@@ -63,8 +63,8 @@ class Cracker(object):
 
 def main():
     parser = argparse.ArgumentParser(prog = sys.argv[0], description='Unix password cracker')
-    parser.add_argument('-f', '--zipfile', help = 'specify zip file')
-    parser.add_argument('-d', '--dictonary', help = 'dictonary used to crack zip file')
+    parser.add_argument('-f', dest = 'zipfile', help = 'specify zip file')
+    parser.add_argument('-d', dest = 'dictonary', help = 'dictonary used to crack zip file')
     args = parser.parse_args()
     if args.zipfile == None or args.dictonary == None:
         parser.print_usage()
