@@ -10,13 +10,10 @@ zipfile_cracker.py
 import sys
 import os
 import zipfile
+from argparse import ArgumentParser
 from threading import Thread
 
 ls = os.linesep
-
-def usage():
-    print('Usage\n  {0} zipfile dictonary'.format(sys.argv[0]))
-    sys.exit(1)
 
 class Cracker(object):
     def __init__(self, zipfile, dictonary):
@@ -43,9 +40,14 @@ class Cracker(object):
         self.try_password()
 
 def main():
-    if len(sys.argv) < 3:
-        usage()
-    cracker = Cracker(sys.argv[1], sys.argv[2])
+    parser = ArgumentParser(prog = sys.argv[0], description='password-protected zipfile cracker')
+    parser.add_argument('-f', dest = 'zipfile', help = 'specify password-protected zip file')
+    parser.add_argument('-d', dest = 'dictonary', help = 'dictonary used to crack zip file')
+    args = parser.parse_args()
+    if args.zipfile == None or args.dictonary == None:
+        parser.print_usage()
+        sys.exit(0)
+    cracker = Cracker(args.zipfile, args.dictonary)
     cracker.run()
 
 if __name__ == '__main__':
