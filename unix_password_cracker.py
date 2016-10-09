@@ -62,12 +62,12 @@ class Cracker(object):
         self.try_password()
 
 def main():
-    parser = argparse.ArgumentParser(description='Unix password cracker')
+    parser = argparse.ArgumentParser(prog = sys.argv[0], description='Unix password cracker')
     parser.add_argument('-f', '--zipfile', help = 'specify zip file')
     parser.add_argument('-d', '--dictonary', help = 'dictonary used to crack zip file')
     args = parser.parse_args()
     if args.zipfile == None or args.dictonary == None:
-        print(parser.usage)
+        parser.print_usage()
         sys.exit(0)
     cracker = Cracker(args.zipfile, args.dictonary)
     cracker.run()
