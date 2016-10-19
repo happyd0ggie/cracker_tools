@@ -35,7 +35,7 @@ def push():
 		else:
 			pass
 	git.sendline('shengdexiang')
-	git.expect('Password.*')
+	git.expect('[P|p]assword.*')
 	git.sendline(password)
 	git.interact()
 
